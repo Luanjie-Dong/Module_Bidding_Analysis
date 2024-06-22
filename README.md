@@ -6,7 +6,7 @@ The goal of this analysis is to evaluate the median and minimum bid prices for d
 ## Objectives
 * Analyze the median and minimum bid prices for IS210 across different years.
 * Compare the bidding patterns for different instructors and sections.
-* Provide visual insights through scatter plots and bar charts.
+* Provide visual insights through scatter plots 
 
 ## Tools and Technologies
 Programming Language: R
