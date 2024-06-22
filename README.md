@@ -24,7 +24,6 @@ Packages Used:
 
 ## Visualizations
 * Scatter Plots: Displayed the median and minimum bid prices for each instructor and section, with clear labels and color coding for easy differentiation.
-* Bar Charts: Illustrated the average median and minimum bid prices across different academic years.
 
 
 ## Conclusion
