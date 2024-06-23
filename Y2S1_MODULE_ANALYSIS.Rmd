@@ -1,0 +1,132 @@
+---
+title: "Year to Year IS210 Bid Analysis"
+output:
+  pdf_document: default
+---
+
+## Load Libraries
+```{r Loading Libraries, echo=TRUE}
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("ggplot2")
+library(ggplot2)
+install.packages("here")
+library("here")
+install.packages("skimr")
+library("skimr")
+install.packages("janitor")
+library("janitor")
+install.packages("dplyr")
+library("dplyr")
+install.packages("readxl")
+library(readxl)
+```
+
+## Prepare the data
+```{r Prepare Data, echo=TRUE}
+library(dplyr)
+library(readxl)
+
+# Define the years and initialize an empty list to hold data frames
+years <- c("2021-22", "2022-23", "2023-24")
+bidding_data_list <- list()
+
+# For loop to read datasets for each year and add them to the list
+for (year in years) {
+  file_path <- paste0("../bidding_data/", year, "_T1.xls")
+  temp <- read_excel(file_path)
+  temp <- temp %>% mutate(Year = year)
+  bidding_data_list[[year]] <- temp
+}
+
+# Combine all data frames in the list into a single data frame
+bidding_data <- bind_rows(bidding_data_list)
+View(bidding_data)
+```
+
+## Module Information
+```{r}
+course <- "COR1305" #edit intended course
+course_name <- "Spreadsheet Modelling and Analytics" #edit intended course name
+semester <- "Y2S1"
+max_range <- 60
+instructor <- "WANG HAI"
+```
+
+## Plot 1 -> Bidding Price vs ALL Instructor
+```{r Bidding Price vs ALL Instructor, echo=FALSE}
+
+bidding_data_filtered <- bidding_data %>% 
+  select(`Bidding Window`,`Course Code`,`Median Bid`,`Min Bid`  ,`Instructor`,Section ,Year) %>% 
+  filter(`Course Code` == course,`Median Bid` != 0, `Min Bid`!= 0,`Bidding Window` == "Round 1 Window 1") %>% 
+  unite("Instructor_Section",Instructor,Section,sep = "-")
+
+#View(bidding_data_filtered)
+
+averages <- bidding_data_filtered %>%
+  group_by(Year) %>%
+  summarise(avg_median_bid = mean(`Median Bid`, na.rm = TRUE),avg_min_bid = mean(`Min Bid`, na.rm = TRUE))
+
+bidding_data_with_averages <- bidding_data_filtered %>%
+  left_join(averages, by = "Year")
+
+#View(bidding_data_with_averages)
+
+ggplot(bidding_data_filtered ) +
+  geom_point(mapping = aes(x = Instructor_Section, y = `Median Bid`, color = "Median Bid"), size = 0.5) +
+  geom_point(mapping = aes(x = Instructor_Section, y = `Min Bid`, color = "Min Bid"), size = 0.5) +
+  geom_text(mapping = aes(x = Instructor_Section, y = `Median Bid`, label = `Median Bid`), vjust = -0.8, color = "blue", size = 2)+
+  geom_text(mapping = aes(x = Instructor_Section, y = `Min Bid`, label = `Min Bid`), vjust = 1.8, color = "red", size = 2) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=5)) + geom_hline(data = averages, aes(yintercept = avg_median_bid,    color = "Avg Median Bid"), linetype = "dashed") +
+  geom_hline(data = averages, aes(yintercept = avg_min_bid, color = "Avg Min Bid"), linetype = "dotted") +
+  geom_text(data = averages, aes(x = -3, y = avg_median_bid, label = paste("Avg Median:", round(avg_median_bid, 2))), color =        "blue", vjust = -1.5,  hjust = -0.1,size=2) +
+  geom_text(data = averages, aes(x = -3, y = avg_min_bid, label = paste("Avg Min:", round(avg_min_bid, 2))), color = "red", vjust =   -1, hjust =  -0.1,size=2) +
+  labs(title = "Window 1 Bidding Price",subtitle = paste0(course," ",course_name) ,y = "Bid Price") +
+  scale_y_continuous(limits = c(0, max_range)) +
+  facet_wrap(~Year) +
+  scale_color_manual(values = c("Median Bid" = "blue", "Min Bid" = "red"), name = "Bid Type")
+  
+
+save_path = paste0(semester,"_ANALYSIS/", course, "_ANALYSIS.png")
+
+ggsave(save_path,, width = 10, height = 6)
+```
+
+## Plot 2 -> Bidding Price vs SPECIFIC Instructor
+```{r Bidding Price vs SPECIFIC Instructor, echo=FALSE}
+
+bidding_data_filtered <- bidding_data %>% 
+  select(`Bidding Window`,`Course Code`,`Median Bid`,`Min Bid`  ,`Instructor`,Section ,Year) %>% 
+  filter(`Course Code` == course,`Median Bid` != 0, `Min Bid`!= 0,`Bidding Window` == "Round 1 Window 1",Instructor==instructor)%>%
+  unite("Instructor_Section",Instructor,Section,sep = "-")
+
+#View(bidding_data_filtered)
+
+averages <- bidding_data_filtered %>%
+  group_by(Year) %>%
+  summarise(avg_median_bid = mean(`Median Bid`, na.rm = TRUE),avg_min_bid = mean(`Min Bid`, na.rm = TRUE))
+
+bidding_data_with_averages <- bidding_data_filtered %>%
+  left_join(averages, by = "Year")
+
+#View(bidding_data_with_averages)
+
+ggplot(bidding_data_filtered ) +
+  geom_point(mapping = aes(x = Instructor_Section, y = `Median Bid`, color = "Median Bid"), size = 0.5) +
+  geom_point(mapping = aes(x = Instructor_Section, y = `Min Bid`, color = "Min Bid"), size = 0.5) +
+  geom_text(mapping = aes(x = Instructor_Section, y = `Median Bid`, label = `Median Bid`), vjust = -0.8, color = "blue", size = 2)+
+  geom_text(mapping = aes(x = Instructor_Section, y = `Min Bid`, label = `Min Bid`), vjust = 1.8, color = "red", size = 2) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=5)) + geom_hline(data = averages, aes(yintercept = avg_median_bid,    color = "Avg Median Bid"), linetype = "dashed") +
+  geom_hline(data = averages, aes(yintercept = avg_min_bid, color = "Avg Min Bid"), linetype = "dotted") +
+  geom_text(data = averages, aes(x = -3, y = avg_median_bid, label = paste("Avg Median:", round(avg_median_bid, 2))), color =        "blue", vjust = -1.5,  hjust = -0.1,size=2) +
+  geom_text(data = averages, aes(x = -3, y = avg_min_bid, label = paste("Avg Min:", round(avg_min_bid, 2))), color = "red", vjust =   -1, hjust =  -0.1,size=2) +
+  labs(title = "Window 1 Bidding Price",subtitle = paste0(course," ",course_name) ,y = "Bid Price") +
+  scale_y_continuous(limits = c(0, max_range)) +
+  facet_wrap(~Year) +
+  scale_color_manual(values = c("Median Bid" = "blue", "Min Bid" = "red"), name = "Bid Type")
+  
+
+save_path = paste0(semester,"_ANALYSIS/", course, "_INSTRUCTOR_ANALYSIS.png")
+
+ggsave(save_path,, width = 10, height = 6)
+```
