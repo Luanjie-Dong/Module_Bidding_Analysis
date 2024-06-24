@@ -1,10 +1,10 @@
 # Bidding_Analysis
 ## Overview
-This project involves analyzing the bidding data for the course COR1305 for Term 1 Window 1(Business Process Analysis & Solutioning) at SMU across three academic years: 2021-22, 2022-23, and 2023-24.
+This project involves analyzing the bidding data for the sample course COR1305 for Term 1 Window 1(Business Process Analysis & Solutioning) at SMU across three academic years: 2021-22, 2022-23, and 2023-24.
 The goal of this analysis is to evaluate the median and minimum bid prices for different instructors and sections within these years using R. 
 
 ## Objectives
-* Analyze the median and minimum bid prices for IS210 across different years.
+* Analyze the median and minimum bid prices for COR1305 across different years.
 * Compare the bidding patterns for different instructors and sections.
 * Provide visual insights through scatter plots 
 
