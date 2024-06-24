@@ -51,7 +51,7 @@ bidding_data <- bind_rows(bidding_data_list)
 ```{r}
 #Input intended Course , Course Name and Instructor
 course <- "COR1305" 
-course_name <- "Spreadsheet Modelling and Analytics" #edit intended course name
+course_name <- "Spreadsheet Modelling and Analytics" 
 semester <- "Y2S1"
 max_range <- 60
 instructor <- "WANG HAI"
