@@ -1,4 +1,4 @@
-# Bidding_Analysis
+# Bidding Analysis
 ## Overview
 This project involves analyzing the bidding data for the sample course COR1305 for Term 1 Window 1 at SMU across three academic years: 2021-22, 2022-23, and 2023-24.
 The goal of this analysis is to evaluate the median and minimum bid prices for different instructors and sections within these years using R. 
